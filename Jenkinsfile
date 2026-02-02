@@ -4,22 +4,14 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                git branch: 'main',
-                    url: 'https://github.com/Jagannath-bite/jagan-docker.git'
-
+                checkout scm
             }
         }
-        stage('Checkout Code') {
-    steps {
-        checkout scm
-    }
-}
-
 
         stage('Build & Deploy') {
             steps {
                 sh '''
-                docker-compose down
+                docker-compose down || true
                 docker-compose up -d --build
                 '''
             }
@@ -28,10 +20,10 @@ pipeline {
 
     post {
         success {
-            echo "✅ Deployment Successful"
+            echo '✅ Deployment Successful'
         }
         failure {
-            echo "❌ Deployment Failed"
+            echo '❌ Deployment Failed'
         }
     }
 }
