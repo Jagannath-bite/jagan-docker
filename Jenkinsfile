@@ -9,6 +9,12 @@ pipeline {
 
             }
         }
+        stage('Checkout Code') {
+    steps {
+        checkout scm
+    }
+}
+
 
         stage('Build & Deploy') {
             steps {
