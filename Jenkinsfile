@@ -5,7 +5,8 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 git branch: 'main',
-                    url: 'https://github.com/<your-username>/devops-fullstack.git'
+                    url: 'https://github.com/Jagannath-bite/jagan-docker.git'
+
             }
         }
 
