@@ -4,8 +4,8 @@ pipeline {
 
     environment {
         DOCKER_USER = "jagannath239"
-        BACKEND_IMAGE = "fullstack-backend"
-        FRONTEND_IMAGE = "fullstack-frontend"
+        BACKEND_IMAGE = "jagannath-backend"
+        FRONTEND_IMAGE = "jagannath-frontend"
         TAG = "latest"
     }
 
@@ -17,7 +17,7 @@ pipeline {
             }
         }
 
-        stage('Build Images') {
+        stage('Build Docker Images') {
             steps {
                 sh '''
                 echo "Building Backend Image..."
@@ -29,22 +29,22 @@ pipeline {
             }
         }
 
-        stage('Docker Login') {
+        stage('Docker Hub Login') {
             steps {
                 withCredentials([usernamePassword(
                     credentialsId: 'dockerhubcred',
-                    usernameVariable: 'DOCKER_USER_NAME',
-                    passwordVariable: 'DOCKER_PASS'
+                    usernameVariable: 'DOCKER_USERNAME',
+                    passwordVariable: 'DOCKER_PASSWORD'
                 )]) {
 
                     sh '''
-                    echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER_NAME" --password-stdin
+                    echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
                     '''
                 }
             }
         }
 
-        stage('Push Images') {
+        stage('Push Images to Docker Hub') {
             steps {
                 sh '''
                 docker push $DOCKER_USER/$BACKEND_IMAGE:$TAG
@@ -53,7 +53,7 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
+        stage('Deploy Application') {
             steps {
                 sh '''
                 docker-compose down || true
@@ -67,11 +67,11 @@ pipeline {
     post {
 
         success {
-            echo "✅ CI/CD Pipeline Completed Successfully"
+            echo "✅ Pipeline Completed Successfully!"
         }
 
         failure {
-            echo "❌ CI/CD Pipeline Failed"
+            echo "❌ Pipeline Failed. Check logs."
         }
 
         always {
